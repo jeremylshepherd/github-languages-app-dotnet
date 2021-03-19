@@ -38,19 +38,8 @@ namespace GithubLanguagesApp.Controllers
         [HttpGet("{username}")]
         public async Task<GithubUser> Get(string username)
         {
-
-            using (HttpResponseMessage response = await ApiHelper.ApiClient.GetAsync(username))
-            {
-                if(response.IsSuccessStatusCode)
-                {
-                    GithubUser user = await JsonSerializer.DeserializeAsync<GithubUser>(await response.Content.ReadAsStreamAsync());
-                    return user;
-                }
-                else
-                {
-                    throw new Exception(response.ReasonPhrase);
-                }
-            }
+            GithubUser user = await GithubProcessor.GetUser(username);
+            return user;
         }
 
         // POST api/<GithubUserController>

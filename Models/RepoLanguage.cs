@@ -7,6 +7,7 @@ namespace GithubLanguagesApp.Models
 {
     public class RepoLanguage
     {
+        public int RepoId { get; set; }
         public string Language { get; set; }
         public long ByteSize { get; set; }
     }

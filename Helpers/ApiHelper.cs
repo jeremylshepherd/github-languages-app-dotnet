@@ -24,6 +24,7 @@ namespace GithubLanguagesApp.Helpers
             ApiClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             ApiClient.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("dotNet", "3.1"));
             ApiClient.DefaultRequestHeaders.Add("token", $"token {_githubApiKey}");
+            ApiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("token", _githubApiKey);
         }
     }
 }

@@ -24,6 +24,9 @@ namespace GithubLanguagesApp.Models
         [JsonProperty("updated_at")]
         [JsonPropertyName("updated_at")]
         public DateTime UpdatedAt { get; set; }
+        [JsonProperty("languages_url")]
+        [JsonPropertyName("languages_url")]
+        public Uri  LanguagesUrl { get; set; }
         public List<RepoLanguage> RepoLanguages { get; set; }
     }
 }
