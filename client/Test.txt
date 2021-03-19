@@ -1,0 +1,3 @@
+﻿Testing
+
+Discovered that my React wasn't being tracked in git because create-react-app inits a git repo thus excluding it from the parent solution.
