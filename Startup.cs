@@ -44,6 +44,10 @@ namespace GithubLanguagesApp
             services.AddAuthentication()
                 .AddIdentityServerJwt();
 
+            services.AddControllers().AddNewtonsoftJson(options =>
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+            );
+
             services.AddControllersWithViews();
             services.AddRazorPages();
 

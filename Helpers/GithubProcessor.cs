@@ -40,6 +40,11 @@ namespace GithubLanguagesApp.Helpers
                 if (response.IsSuccessStatusCode)
                 {
                     List<Repo> repos = await JsonSerializer.DeserializeAsync<List<Repo>>(await response.Content.ReadAsStreamAsync());
+                    foreach (Repo repo in repos)
+                    {
+                        List<RepoLanguage> repoLanguages = await GetRepoLanguages(repo);
+                        repo.RepoLanguages = repoLanguages;
+                    }
                     return repos;
                 }
                 else
@@ -47,7 +52,34 @@ namespace GithubLanguagesApp.Helpers
                     throw new Exception(response.ReasonPhrase);
                 }
             }
-        }        
+        } 
+        
+        public static async Task<List<RepoLanguage>> GetRepoLanguages(Repo repo)
+        {
+            using (HttpResponseMessage response = await ApiHelper.ApiClient.GetAsync(repo.LanguagesUrl))
+            {
+                List<RepoLanguage> repoLanguages = new List<RepoLanguage>();
+                if (response.IsSuccessStatusCode)
+                {
+                    Dictionary<string, long> dict = await JsonSerializer.DeserializeAsync<Dictionary<string, long>>(await response.Content.ReadAsStreamAsync());
+                    foreach(KeyValuePair<string, long> entry in dict)
+                    {
+                        var repoLanguage = new RepoLanguage
+                        {
+                            Language = entry.Key,
+                            ByteSize = entry.Value,
+                            RepoId = repo.RepoId
+                        };
+                        repoLanguages.Add(repoLanguage);
+                    }
+                    return repoLanguages;
+                }
+                else
+                {
+                    throw new Exception(response.ReasonPhrase);
+                }
+            }
+        }
                
     }
 }
