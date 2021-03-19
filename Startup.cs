@@ -50,7 +50,7 @@ namespace GithubLanguagesApp
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
-                configuration.RootPath = "client-app/build";
+                configuration.RootPath = "client/build";
             });
         }
 
@@ -88,7 +88,7 @@ namespace GithubLanguagesApp
 
             app.UseSpa(spa =>
             {
-                spa.Options.SourcePath = "client-app";
+                spa.Options.SourcePath = "client";
 
                 if (env.IsDevelopment())
                 {
