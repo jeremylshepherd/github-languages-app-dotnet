@@ -1,9 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
-using System;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace GithubLanguagesApp.Data.Migrations
+namespace GithubLanguagesApp.Migrations
 {
-    public partial class CreateIdentitySchema : Migration
+    public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -61,6 +61,19 @@ namespace GithubLanguagesApp.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_DeviceCodes", x => x.UserCode);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "GithubUsers",
+                columns: table => new
+                {
+                    GithubUserId = table.Column<int>(nullable: false),
+                    GithubUsername = table.Column<string>(nullable: true),
+                    GithubUserAvatar = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GithubUsers", x => x.GithubUserId);
                 });
 
             migrationBuilder.CreateTable(
@@ -186,6 +199,49 @@ namespace GithubLanguagesApp.Data.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Repos",
+                columns: table => new
+                {
+                    RepoId = table.Column<int>(nullable: false),
+                    RepoName = table.Column<string>(nullable: true),
+                    OwnerGithubUserId = table.Column<int>(nullable: true),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    UpdatedAt = table.Column<DateTime>(nullable: false),
+                    LanguagesUrl = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Repos", x => x.RepoId);
+                    table.ForeignKey(
+                        name: "FK_Repos_GithubUsers_OwnerGithubUserId",
+                        column: x => x.OwnerGithubUserId,
+                        principalTable: "GithubUsers",
+                        principalColumn: "GithubUserId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "RepoLanguages",
+                columns: table => new
+                {
+                    RepoLanguageId = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    RepoId = table.Column<int>(nullable: false),
+                    Language = table.Column<string>(nullable: true),
+                    ByteSize = table.Column<long>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RepoLanguages", x => x.RepoLanguageId);
+                    table.ForeignKey(
+                        name: "FK_RepoLanguages_Repos_RepoId",
+                        column: x => x.RepoId,
+                        principalTable: "Repos",
+                        principalColumn: "RepoId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -245,6 +301,16 @@ namespace GithubLanguagesApp.Data.Migrations
                 name: "IX_PersistedGrants_SubjectId_ClientId_Type",
                 table: "PersistedGrants",
                 columns: new[] { "SubjectId", "ClientId", "Type" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RepoLanguages_RepoId",
+                table: "RepoLanguages",
+                column: "RepoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Repos_OwnerGithubUserId",
+                table: "Repos",
+                column: "OwnerGithubUserId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -271,10 +337,19 @@ namespace GithubLanguagesApp.Data.Migrations
                 name: "PersistedGrants");
 
             migrationBuilder.DropTable(
+                name: "RepoLanguages");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Repos");
+
+            migrationBuilder.DropTable(
+                name: "GithubUsers");
         }
     }
 }

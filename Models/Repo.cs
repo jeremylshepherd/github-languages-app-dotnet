@@ -1,6 +1,8 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
@@ -11,6 +13,8 @@ namespace GithubLanguagesApp.Models
     {
         [JsonProperty("id")]
         [JsonPropertyName("id")]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Key]
         public int RepoId { get; set; }
         [JsonProperty("name")]
         [JsonPropertyName("name")]

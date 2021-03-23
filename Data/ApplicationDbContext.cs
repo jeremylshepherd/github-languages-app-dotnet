@@ -17,5 +17,10 @@ namespace GithubLanguagesApp.Data
             IOptions<OperationalStoreOptions> operationalStoreOptions) : base(options, operationalStoreOptions)
         {
         }
+
+        public DbSet<GithubUser> GithubUsers { get; set; }
+        public DbSet<Repo> Repos { get; set; }
+        public DbSet<RepoLanguage> RepoLanguages { get; set; }
+
     }
 }

@@ -1,4 +1,5 @@
-﻿using GithubLanguagesApp.Helpers;
+﻿using GithubLanguagesApp.Data;
+using GithubLanguagesApp.Helpers;
 using GithubLanguagesApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -16,13 +17,15 @@ namespace GithubLanguagesApp.Controllers
     [ApiController]
     public class ReposController : ControllerBase
     {
-
-        public ReposController()
+        private readonly ApplicationDbContext _context;
+        private readonly GithubProcessor githubProcessor;
+        
+        public ReposController(ApplicationDbContext context)
         {
-            ApiHelper.InitializeClient();
+            _context = context;
+            githubProcessor = new GithubProcessor(context);
         }
 
-        // GET: api/<ReposController>
         [HttpGet]
         public IEnumerable<string> Get()
         {
@@ -32,19 +35,9 @@ namespace GithubLanguagesApp.Controllers
         [HttpGet("{username}")]
         public async Task<List<Repo>> Get(string username)
         {
-            using (HttpResponseMessage response = await ApiHelper.ApiClient.GetAsync($"{username}/repos"))
-            {
-                if (response.IsSuccessStatusCode)
-                {
-                    Console.WriteLine(response.ToString());
-                    List<Repo> repos = await JsonSerializer.DeserializeAsync<List<Repo>>(await response.Content.ReadAsStreamAsync());
-                    return repos;
-                }
-                else
-                {
-                    throw new Exception(response.ReasonPhrase);
-                }
-            }
+            GithubUser user = await githubProcessor.GetUser(username);
+            List<Repo> repos = await githubProcessor.GetRepos(user);
+            return repos;
         }
 
         // POST api/<ReposController>

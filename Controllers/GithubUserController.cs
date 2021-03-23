@@ -9,23 +9,27 @@ using GithubLanguagesApp.Models;
 using System.Text.Json;
 using Microsoft.Extensions.Configuration;
 using GithubLanguagesApp.Helpers;
+using GithubLanguagesApp.Data;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace GithubLanguagesApp.Controllers
-{
+{    
+
     [Route("api/[controller]")]
     [ApiController]
     public class GithubUserController : ControllerBase
     {
 
-        private readonly IConfiguration _config;
+        private readonly ApplicationDbContext _context;
+        private readonly GithubProcessor githubProcessor;
 
-        public GithubUserController(IConfiguration config)
+        public GithubUserController(ApplicationDbContext context)
         {
-            _config = config;
-            ApiHelper.InitializeClient();
-        }
+            _context = context;
+            githubProcessor = new GithubProcessor(context);
+    }
+
 
         // GET: api/<GithubUserController>
         [HttpGet]
@@ -38,7 +42,7 @@ namespace GithubLanguagesApp.Controllers
         [HttpGet("{username}")]
         public async Task<GithubUser> Get(string username)
         {
-            GithubUser user = await GithubProcessor.GetUser(username);
+            GithubUser user = await githubProcessor.GetUser(username);
             return user;
         }
 
